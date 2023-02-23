@@ -1,10 +1,10 @@
 require("dotenv").config()
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, GatewayIntentBits, Collection, EmbedBuilder, PermissionsBitField, Permissions, SlashCommandBuilder } = require(`discord.js`);
+const { Client, GatewayIntentBits, Collection, EmbedBuilder,Events, PermissionsBitField, Permissions, SlashCommandBuilder } = require(`discord.js`);
 const prefix = '!';
-const CLIENT_ID = process.env.CLIENT_ID;
-const GUILD_ID = process.env.GUILD_ID;
+const CLIENT_ID = process.env.client_Id;
+const GUILD_ID = process.env.guild_Id;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, 
     GatewayIntentBits.GuildMessages, 
@@ -17,8 +17,41 @@ client.on("ready", () => {
     client.user.setActivity(`IDK`, {type: "IDK" });
 
 })
+// testing slash command builder
+client.commands = new Collection();
 
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
+for (const file of commandFiles) {
+	const filePath = path.join(commandsPath, file);
+	const command = require(filePath);
+	// Set a new item in the Collection with the key as the command name and the value as the exported module
+	if ('data' in command && 'execute' in command) {
+		client.commands.set(command.data.name, command);
+	} else {
+		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+	}
+}
+
+client.on(Events.InteractionCreate, async interaction => {
+	if (!interaction.isChatInputCommand()) return;
+
+	const command = interaction.client.commands.get(interaction.commandName);
+
+	if (!command) {
+		console.error(`No command matching ${interaction.commandName} was found.`);
+		return;
+	}
+
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	}
+});
+//end of slash command builder
 
 client.on("messageCreate", (message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -55,7 +88,7 @@ function createRole(message) {
 
 
 // testing create channel
-/*
+
 if (command === 'create-channel') {
     const channelName = message.content.split(" ").slice(1).join(" ");
     const guild = message.guild;
@@ -69,7 +102,7 @@ if (command === 'create-channel') {
     .catch(console.error);
 
 }
-*/
+
 if (command === 'createtextchannel') {
     const channelName = message.content.split(" ").slice(1).join(" ");
     guild.channels
@@ -114,4 +147,4 @@ if (command === 'createtextchannel') {
 
     }))
 
-client.login(process.env.BOT_TOKEN);
+client.login(process.env.token);
