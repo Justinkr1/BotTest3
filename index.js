@@ -1,11 +1,15 @@
 require("dotenv").config()
-const { Client, GatewayIntentBits, EmbedBuilder, PermissionsBitField, Permissions } = require(`discord.js`);
-
+const fs = require('node:fs');
+const path = require('node:path');
+const { Client, GatewayIntentBits, Collection, EmbedBuilder, PermissionsBitField, Permissions, SlashCommandBuilder } = require(`discord.js`);
 const prefix = '!';
+const CLIENT_ID = process.env.CLIENT_ID;
+const GUILD_ID = process.env.GUILD_ID;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, 
     GatewayIntentBits.GuildMessages, 
     GatewayIntentBits.MessageContent] });
+
 
 client.on("ready", () => {
     console.log("Bot is online!");
@@ -13,6 +17,8 @@ client.on("ready", () => {
     client.user.setActivity(`IDK`, {type: "IDK" });
 
 })
+
+
 
 client.on("messageCreate", (message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -34,6 +40,7 @@ client.on("messageCreate", (message => {
 if (command === 'createRole')(message)=> {
     message.channel.send("If you are in class CSC-325 React with :one:!");
     createRole(message);
+    message = " ";
 }
 function createRole(message) {
     const guild = message.guild;
@@ -48,7 +55,8 @@ function createRole(message) {
 
 
 // testing create channel
-/*if (command === 'create-channel') {
+/*
+if (command === 'create-channel') {
     const channelName = message.content.split(" ").slice(1).join(" ");
     const guild = message.guild;
 
@@ -74,11 +82,10 @@ if (command === 'createtextchannel') {
         const categoryId ='1062143661325955123'
         channel.setParent(categoryId)
     })
+    message = " "
 }
 //testing poll command
-//client.on('message', message => {
     
-    /*if (message.content.startsWith('!poll')) {*/
     if (command === 'poll') {
         const args = message.content.slice(6).split('|');
         const question = args[0];
@@ -104,12 +111,7 @@ if (command === 'createtextchannel') {
         })
         .catch(console.error);
     }
-    
-//})
-
 
     }))
-
-
 
 client.login(process.env.BOT_TOKEN);
