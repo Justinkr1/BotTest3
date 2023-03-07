@@ -1,22 +1,50 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, ChannelType, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('createchannel')
-		.setDescription('Creates Text Channel with given name'),
-	async execute(interaction) {
-		await interaction;
-        const channelName = message.content.split(" ").slice(1).join(" ");
-    guild.channels
-    .create({name: channelName, 
-        type: 0,
-        //parent: cat[0].ID,
-    })
-    .then((channel) => {
-        console.log(channel)
-        const categoryId ='1062143661325955123'
-        channel.setParent(categoryId)
-    })
-    message = " "
-	},
+		.setDescription('Creates a channel')
+        .addStringOption(option => option
+            .setName('channelname')
+            .setDescription('the new channel to create')
+            .setRequired(true),
+            )
+        .addStringOption(option => option
+            .setName('categoryname')
+            .setDescription('the new category to create')
+            .setRequired(true),
+            )
+
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    async execute(interaction) {
+        // console.log(interaction.options.data[0].value);
+        if (interaction.options.data[1] === undefined) {
+            interaction.guild.channels.create({
+                name: interaction.options.data[0].value,
+                type: ChannelType.GuildText,
+            });
+        }
+        else {
+            const temp = await interaction.guild.channels.create({
+                name: interaction.options.data[1].value,
+                type: ChannelType.GuildCategory,
+            });
+            await interaction.guild.channels.create({
+                name: interaction.options.data[0].value,
+                type: ChannelType.GuildText,
+                parent: temp,
+        });
+        await interaction.guild.channels.create({
+            name: "chat",
+            type: ChannelType.GuildText,
+            parent: temp,
+    });
+    await interaction.guild.channels.create({
+        name: "how-to-make-a-video",
+        type: ChannelType.GuildText,
+        parent: temp,
+});
+        }
+        interaction.reply('Channel has been created.');
+    },
 };
