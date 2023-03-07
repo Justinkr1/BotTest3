@@ -2,23 +2,23 @@ const { SlashCommandBuilder, ChannelType, PermissionFlagsBits } = require('disco
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('createchannel')
+		.setName('createcourse')
 		.setDescription('Creates a channel')
         .addStringOption(option => option
-            .setName('channelname')
+            .setName('coursename')
             .setDescription('the new channel to create')
             .setRequired(true),
             )
-        .addStringOption(option => option
+        /*.addStringOption(option => option
             .setName('categoryname')
             .setDescription('the new category to create')
             .setRequired(true),
-            )
+            )*/
 
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     async execute(interaction) {
         // console.log(interaction.options.data[0].value);
-        if (interaction.options.data[1] === undefined) {
+        if (interaction.options.data[0] === undefined) {
             interaction.guild.channels.create({
                 name: interaction.options.data[0].value,
                 type: ChannelType.GuildText,
@@ -26,25 +26,35 @@ module.exports = {
         }
         else {
             const temp = await interaction.guild.channels.create({
-                name: interaction.options.data[1].value,
+                name: interaction.options.data[0].value,
                 type: ChannelType.GuildCategory,
             });
             await interaction.guild.channels.create({
-                name: interaction.options.data[0].value,
+                name: "announcements-"+interaction.options.data[0].value.toString() ,
                 type: ChannelType.GuildText,
                 parent: temp,
-        });
-        await interaction.guild.channels.create({
-            name: "chat",
-            type: ChannelType.GuildText,
-            parent: temp,
-    });
-    await interaction.guild.channels.create({
-        name: "how-to-make-a-video",
-        type: ChannelType.GuildText,
-        parent: temp,
-});
-        }
-        interaction.reply('Channel has been created.');
+            });
+            await interaction.guild.channels.create({
+                name: "zoom-meeting-info",
+                type: ChannelType.GuildText,
+                parent: temp,
+            });
+            await interaction.guild.channels.create({
+                name: "how-to-make-a-video",
+                type: ChannelType.GuildText,
+                parent: temp,
+            });
+            await interaction.guild.channels.create({
+                name: "introduce-yourself",
+                type: ChannelType.GuildText,
+                parent: temp,
+            });
+            await interaction.guild.channels.create({
+                name: "chat",
+                type: ChannelType.GuildText,
+                parent: temp,
+            });
+            }
+            interaction.reply('Channel has been created.');
     },
 };
