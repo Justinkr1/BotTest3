@@ -117,34 +117,68 @@ if (command === 'createtextchannel') {
     })
     message = " "
 }
-//testing poll command
-    
-    if (command === 'poll') {
-        const args = message.content.slice(6).split('|');
-        const question = args[0];
-        const options = args.slice(1);
-    if (options.length < 2) {
-        return message.reply('Please provide at least 2 options for the poll.');
-        }
-    const pollEmbed = new Discord.MessageEmbed()
-        .setTitle(question)
-        .setColor('#0099ff')
-        .setFooter('Poll created by ' + message.author.username)
-        .setTimestamp();
-    
-        options.forEach((option, i) => {
-            pollEmbed.addField(`Option ${i + 1}`, option);
-            });
 
-    message.channel.send(pollEmbed)
-        .then(pollMessage => {
-            options.forEach((option, i) => {
-            pollMessage.react(['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯'][i]);
-            });
-        })
-        .catch(console.error);
+    }));
+//testing poll
+//!poll What's your favorite color?, Red, Blue, Green, @Voters, #polls
+//updated on March 6, 2023
+client.on('messageCreate', async message => {
+  if (message.content.startsWith('!poll')) {
+    const args = message.content.toString().slice(5).trim().split(',');
+    const question = args[0].trim();
+    const options = args.slice(1).map(option => option.trim());
+
+    const pollEmbed = new EmbedBuilder()
+      .setColor('#0099ff')
+      .setTitle(question)
+      //.setDescription(`React with the corresponding emoji to vote!\n\n${options.map((option, index) => `${index + 1}️⃣ ${option}`).join('\n')}`);
+      .setDescription(`React with the corresponding emoji to vote!\n\n${options.map((option, index) => `${index + 1}️⃣ ${option} - 0`).join('\n')}`);
+
+    const channelOption = options.find(option => option.startsWith('#'));
+
+    let channel;
+
+    if (channelOption) {
+      const channelName = channelOption.slice(1).trim();
+      channel = message.guild.channels.cache.find(channel => channel.name === channelName && channel.type === 'GUILD_TEXT');
+      if (!channel) {
+        return message.reply(`Couldn't find a channel with name "${channelName}"`);
+      }
+    } else {
+      channel = message.channel;
     }
 
-    }))
+    const pollMessage = await channel.send({ embeds: [pollEmbed] });
+
+    for (let i = 0; i < options.length; i++) {
+      await pollMessage.react(`${i + 1}️⃣`);
+    }
+
+    const roleOption = options.find(option => option.startsWith('@'));
+    let role;
+
+    if (roleOption) {
+      const roleName = roleOption.slice(1);
+      role = message.guild.roles.cache.find(role => role.name === roleName);
+    }
+
+    if (role) {
+      const filter = (reaction, user) => {
+        return options.includes(`${reaction.emoji.name}`) && !user.bot;
+      };
+
+      const collector = pollMessage.createReactionCollector({ filter, time: 60000 });
+
+      collector.on('collect', (reaction, user) => {
+        const member = message.guild.members.cache.get(user.id);
+        member.roles.add(role);
+      });
+
+      collector.on('end', collected => {
+        channel.send(`Poll has ended! ${role} has been granted to ${collected.size} user(s)`);
+      });
+    }
+  }
+});
 
 client.login(process.env.token);
