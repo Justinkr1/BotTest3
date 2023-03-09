@@ -12,7 +12,10 @@ module.exports = {
             )
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     async execute(interaction) {
-        const Color = [0, 25, 50];
+        const Random1 = Math.Random(0-255)
+        const Random2 = Math.Random(0-255)
+        const Random3 = Math.Random(0-255)
+        const Color = [Random1, Random2, Random3];
         interaction.guild.roles.create({
             name: interaction.options.data[0].value,
             color: Color,
