@@ -1,5 +1,17 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const fs = require('fs');
+/*file = 'hexcode.txt';
+fs.readFile('hexcode.txt','utf-8',(err,data) => {
+    if(err){
+        console.error(err);
+        return;
+    }
+    console.log(data);
+})*/
 
+
+
+const color =  
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('createrole')
@@ -26,7 +38,7 @@ module.exports = {
         });
         const ColorD = [Random1 -Random1*0.15, Random2 -Random2*0.15, Random2 -Random2*0.15];
         interaction.guild.roles.create({
-            name: interaction.options.data[0].value,
+            name: 'Veteran' + interaction.options.data[0].value,
             color: ColorD,
             reason: 'Veteran Role created',
         });

@@ -4,9 +4,9 @@
  run terminal
 install 'npm i dotenv'
 
-create a .env files with BOT_TOKEN, CLIENT_ID and GUILD_ID variables
-CLIENT_ID is application ID of the bot
-GUILD_ID is ID of the server its on
+create a .env files with token, client_Id and guild_Id variables
+client_Id is application ID of the bot
+guild_Id is ID of the server its on
 
 to test bot use these commands in this order:
 
