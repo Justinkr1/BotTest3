@@ -46,7 +46,7 @@ module.exports = {
         user.id === interaction.user.id &&
         /[1-4]\u20E3/.test(reaction.emoji.toString());
   
-     /* msg.awaitReactions({ filter, max: 1, time: 30000 }).then((collected) => {
+      msg.awaitReactions({ filter, max: 1, time: 30000 }).then((collected) => {
         const reaction = collected.first();
   
         if (!reaction) {
@@ -58,7 +58,7 @@ module.exports = {
             `You have enrolled in ${selectedCourse.number} - ${selectedCourse.name}`
           );
         }
-    });*/
+      });
     },
   };
   
