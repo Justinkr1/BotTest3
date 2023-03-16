@@ -1,13 +1,24 @@
-require("dotenv").config();
-const { Client, GatewayIntentBits, MessageEmbed } = require("discord.js");
+
+const { Client, GatewayIntentBits, MessageEmbed, SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const client = new Client({
   intents: [
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GUILD_MESSAGES,
+    GatewayIntentBits.GUILD_MESSAGE_REACTIONS,
   ],
 });
 
-const prefix = "!";
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('enroll')
+		.setDescription('Enroll in a course')
+        .addStringOption(option =>
+            option
+            .setName('class-name')
+            .setDescription('the class name to create')
+            .setRequired(true),
+            )
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    async execute(interaction) {
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}`);
@@ -19,7 +30,7 @@ client.on("messageCreate", (message) => {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
-  if (command === "enroll") {
+   {
     const courses = [
       { number: "CSC-325", name: "Data Structures and Algorithms" },
       { number: "CSC-355", name: "Database Systems" },
@@ -61,5 +72,5 @@ client.on("messageCreate", (message) => {
     });
   }
 });
-
-client.login(process.env.BOT_TOKEN);
+}
+}
