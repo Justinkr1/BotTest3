@@ -2,8 +2,8 @@
 const { Client, GatewayIntentBits, MessageEmbed, SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const client = new Client({
   intents: [
-    GatewayIntentBits.GUILD_MESSAGES,
-    GatewayIntentBits.GUILD_MESSAGE_REACTIONS,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
   ],
 });
 
