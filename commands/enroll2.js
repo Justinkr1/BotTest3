@@ -1,5 +1,7 @@
-const { Client, GatewayIntentBits, MessageEmbed, SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const { Client, Intents, MessageEmbed, SlashCommandBuilder } = require('discord.js');
+
 const client = new Client({
+<<<<<<< HEAD
   intents: [
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMessageReactions,
@@ -7,26 +9,36 @@ const client = new Client({
 });
 
 /*const prefix = "/";
+=======
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+});
 
-client.on("interactionCreate", async (interaction) => {
+const prefix = '/';
+>>>>>>> 56b763d887be2a6c36bbee8fd299ea4d1803a6c0
+
+client.on('ready', () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return;
 
   const { commandName } = interaction;
-  if (commandName === "enroll") {
+  if (commandName === 'enroll') {
     const courses = [
-      { number: "CSC-325", name: "Data Structures and Algorithms" },
-      { number: "CSC-355", name: "Database Systems" },
-      { number: "CSC-360", name: "Operating Systems" },
-      { number: "CSC-375", name: "Computer Networks" },
+      { number: 'CSC-325', name: 'Data Structures and Algorithms' },
+      { number: 'CSC-355', name: 'Database Systems' },
+      { number: 'CSC-360', name: 'Operating Systems' },
+      { number: 'CSC-375', name: 'Computer Networks' },
     ];
 
     const courseList = courses
       .map((c, i) => `${i + 1}. ${c.number} - ${c.name}`)
-      .join("\n");
+      .join('\n');
 
     const embed = new MessageEmbed()
-      .setColor("#0099ff")
-      .setTitle("Available Courses")
+      .setColor('#0099ff')
+      .setTitle('Available Courses')
       .setDescription(courseList);
 
     const msg = await interaction.reply({ embeds: [embed] });
@@ -54,6 +66,7 @@ client.on("interactionCreate", async (interaction) => {
     });
   }
 });
+<<<<<<< HEAD
 */
 module.exports = {
   data: new SlashCommandBuilder()
@@ -118,3 +131,30 @@ module.exports = {
       });
 }
 }
+=======
+
+const enrollCommand = new SlashCommandBuilder()
+  .setName('enroll')
+  .setDescription('Enroll in a course');
+
+enrollCommand.addStringOption((option) =>
+  option
+    .setName('class-name')
+    .setDescription('The class name to enroll in')
+    .setRequired(true)
+);
+
+client.on('ready', async () => {
+  const commands = [enrollCommand];
+  const guildId = 'YOUR GUILD ID';
+
+  try {
+    const commandList = await client.guilds.cache.get(guildId)?.commands.set(commands);
+    console.log('Slash commands registered:\n', commandList);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+client.login('YOUR BOT TOKEN');
+>>>>>>> 56b763d887be2a6c36bbee8fd299ea4d1803a6c0
