@@ -9,7 +9,7 @@ const client = new Client({
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('enroll')
+		.setName('enroll1st')
 		.setDescription('Enroll in a course')
         .addStringOption(option =>
             option
