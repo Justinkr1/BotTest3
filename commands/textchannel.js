@@ -55,6 +55,6 @@ module.exports = {
                 parent: temp,
             });
             }
-            interaction.reply('Channel has been created.');
+            interaction.reply('Course has been created!');
     },
 };
